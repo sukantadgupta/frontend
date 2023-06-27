@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <form onsubmit="submitForm(event)">
+        <label>Name</label>
+        <input type="text" name="name"></input>
+         <label>Description</label>
+        <input type="text" name="description"></input>
+
+        <button type="submit">Add</button>
+    </form>
+
+
+    <div id="todoList"></div>
+<script>
+    function submitForm(e){
+        e.preventDefault();
+
+        const name = e.target.name.value;
+        const description = e.target.description.value;
+
+        const obj ={
+            name: name,
+            description: description
+        }
+
+        console.log(obj);
+
+        axios.post('http://localhost:3000/add-todo',obj)
+        .then((function(response) {
+            console.log(response)
+            getTodos();
+        }
+            ))
+            .catch((function(error){
+                console.log(error);
+            }))
+
+    }
+
+            // Load todos when DOM content is loaded
+            document.addEventListener("DOMContentLoaded", () => {
+            getTodos();
+
+
+        });
+
+              // Function to display the todos
+              function displayTodos(todos) {
+                console.log()
+            const todoList = document.getElementById("todoList");
+            todoList.innerHTML = ""; // Clear the existing content
+
+            todos.allTodos
+.forEach(todo => {
+                const todoItem = document.createElement("div");
+                todoItem.innerHTML = `<p><strong>Name:</strong> ${todo.name}
+                                       <strong>Description:</strong> ${todo.description}</p>`;
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        // Function to make the GET request and display todos
+        function getTodos() {
+            axios.get("http://localhost:3000/get-todo")
+                .then(response => {
+                    const todos = response.data;
+                    displayTodos(todos);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+
+
+</script>
+
+</body>
+
+</html>
